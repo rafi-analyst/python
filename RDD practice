@@ -1,0 +1,377 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "collapsed_sections": [],
+      "authorship_tag": "ABX9TyORalrA0vcCKXGn8d3cSSBL",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/rafi-analyst/python/blob/python-practice/RDD%20practice\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "M0QkLeJBzLNp",
+        "outputId": "c6b31fa5-e343-44ea-a81d-4fb102ae61cf"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/public/simple/\n",
+            "Collecting pyspark\n",
+            "  Downloading pyspark-3.3.0.tar.gz (281.3 MB)\n",
+            "\u001b[K     |████████████████████████████████| 281.3 MB 42 kB/s \n",
+            "\u001b[?25hCollecting py4j==0.10.9.5\n",
+            "  Downloading py4j-0.10.9.5-py2.py3-none-any.whl (199 kB)\n",
+            "\u001b[K     |████████████████████████████████| 199 kB 50.8 MB/s \n",
+            "\u001b[?25hBuilding wheels for collected packages: pyspark\n",
+            "  Building wheel for pyspark (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for pyspark: filename=pyspark-3.3.0-py2.py3-none-any.whl size=281764026 sha256=9edc5cf8f8136fc9e23dccfa86d0bb53916b7692345fd00e70810b8f13db698e\n",
+            "  Stored in directory: /root/.cache/pip/wheels/7a/8e/1b/f73a52650d2e5f337708d9f6a1750d451a7349a867f928b885\n",
+            "Successfully built pyspark\n",
+            "Installing collected packages: py4j, pyspark\n",
+            "Successfully installed py4j-0.10.9.5 pyspark-3.3.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip3 install pyspark\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pyspark import SparkContext,SparkConf"
+      ],
+      "metadata": {
+        "id": "kzMZBRnZz4Lg"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "conf= SparkConf().setAppName(\"TEST1\").setMaster(\"local[*]\")\n",
+        "sc=SparkContext(conf=conf)"
+      ],
+      "metadata": {
+        "id": "-jSsEStkz-Bg"
+      },
+      "execution_count": 3,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(sc)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JYOy1uGV0Uyj",
+        "outputId": "72198af5-2ddb-4684-98d0-41d2635321fc"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "<SparkContext master=local[*] appName=TEST1>\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sc.defaultParallelism"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EMPxmFx_0sig",
+        "outputId": "9a5e87ae-bc73-438f-c234-50fdb4768fe5"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "2"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 5
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Generate Random data\n",
+        "import random\n",
+        "random_list=random.sample(range(0,50),10)\n",
+        "print(random_list)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "T64BLAG3lMx1",
+        "outputId": "027e730e-67cc-457d-9264-8c265eafc4b9"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[41, 5, 25, 26, 1, 20, 34, 23, 13, 8]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Create a RDD\n",
+        "RDD1=sc.parallelize(random_list,4)\n",
+        "RDD1.collect()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "A7UQuwG50u4o",
+        "outputId": "610e5900-2989-4c47-9184-007909cb1e0b"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[41, 5, 25, 26, 1, 20, 34, 23, 13, 8]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 7
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Data distribution in partitions:\n",
+        "RD=RDD1.glom().collect()\n",
+        "#RDD1.getNumPartitions()"
+      ],
+      "metadata": {
+        "id": "Ql0LWqkpmovS"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# map():\n",
+        "RDD1.map(lambda x:x*3).collect()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "C1DDf57Wn0zh",
+        "outputId": "f5406c46-bc24-43f2-e429-bbc76a0e3a09"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[123, 15, 75, 78, 3, 60, 102, 69, 39, 24]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 9
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#filter():\n",
+        "RDD1.filter(lambda x:x%3==0).collect()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "T1W9Ax2mpEX2",
+        "outputId": "72058e9f-33e5-4ab3-efb3-e398335fe5f2"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 10
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# union():\n",
+        "RDD2=sc.parallelize([1,7,9,12,15,24,35,37],2)\n",
+        "rdd_union=RDD1.union(RDD2).collect()\n",
+        "print(rdd_union)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "YbpP4PCcq87x",
+        "outputId": "343ae32c-b32d-422c-a3fa-87d227330ebe"
+      },
+      "execution_count": 14,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[41, 5, 25, 26, 1, 20, 34, 23, 13, 8, 1, 7, 9, 12, 15, 24, 35, 37]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# intersection():\n",
+        "rdd_intersection= RDD1.intersection(RDD2).glom().collect()\n",
+        "print(rdd_intersection)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gxqGLoxN87a-",
+        "outputId": "99ede347-4d76-4311-a31c-3ff1a345d22e"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[], [1], [], [], [], []]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Find empty partitions\n",
+        "counter=0\n",
+        "for item in rdd_intersection:\n",
+        "  if len(item) == 0:\n",
+        "    counter=counter+1\n",
+        "print(counter)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XlNrZ4TF9RBN",
+        "outputId": "ed789026-4b32-4d34-b460-739e81cb90cd"
+      },
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "5\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# coalesce(numPartitions):\n",
+        "rdd_intersection.coalesce(1).glom().collect()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 183
+        },
+        "id": "xn0espQB97Jg",
+        "outputId": "8f318f1b-da2a-4d12-fe0e-ebd84d7338d8"
+      },
+      "execution_count": 32,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "AttributeError",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-32-91e1511d0dc3>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# coalesce(numPartitions):\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mrdd_intersection\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcoalesce\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mglom\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcollect\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;31mAttributeError\u001b[0m: 'list' object has no attribute 'coalesce'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "2_RUQKAq-1u9"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
